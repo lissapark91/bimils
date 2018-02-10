@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- mapper : select, insert, update, delete -->
+<mapper namespace="com.bimils.myapp.common.image.mapper.ImageMapper"> <!-- class path를 잘 써주어야 한다. 클래스 풀네임 -->
+  
+  <select id="selectImage" resultType="Image" parameterType="int"> <!-- result type : select한 데이터를 어디에 담을지 (Bean) -->
+  		
+	  	SELECT                  
+		    file_seq_no,        
+		    file_path,          
+		    file_name,          
+		    file_save_name,     
+		    file_content_type,  
+		    file_size,          
+		    file_fancy_size,    
+		    reg_user,           
+		    reg_date        
+		FROM                    
+		    bm_image        
+		WHERE file_seq_no = #{file_seq_no}   
+  		
+  </select>
+
+  
+  <insert id="insertImage" parameterType="Image"> <!-- 엘리어스를 정해놨기때문에 Board로 써도됨 -->
+  		
+  		<selectKey keyProperty="file_seq_no" resultType="int" order="BEFORE">
+  			SELECT SEQ_FILE_SEQ_NO.NEXTVAL FROM DUAL
+  		</selectKey>
+		
+		INSERT INTO bm_image (  
+			    file_seq_no,             
+			    file_path,          
+			    file_name,          
+			    file_save_name,     
+			    file_content_type,  
+			    file_size,          
+			    file_fancy_size,    
+   
+			    reg_user,           
+			    reg_date,
+			    reg_yn           
+           
+			) VALUES (              
+			    #{file_seq_no},                
+            
+			    #{file_path},                
+			    #{file_name},                
+			    #{file_save_name},           
+			    #{file_content_type},        
+			    #{file_size},                
+			    #{file_fancy_size},          
+
+			    #{reg_user},             
+			    SYSDATE,
+			    'N'  
+           )
+		
+  </insert>
+  
+  <update id="updateImage" parameterType="int">
+   UPDATE bm_image
+   	SET reg_yn = 'Y'
+   WHERE file_seq_no = #{file_seq_no}
+  
+  </update>
+  
+  
+</mapper>

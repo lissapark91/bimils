@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bimils.myapp.common.sales.mapper.SalesMapper">
+
+	<select id="selectSalesCnt" parameterType="map" resultType="int">
+	  
+	  SELECT  
+		count(*) as count
+		FROM
+		bm_sales
+	  WHERE
+		1=1
+	  <if test=" bo_seq_no != null and bo_seq_no != '' ">
+	  AND
+	  	bo_seq_no = #{bo_seq_no}
+	  </if>
+	  <if test=" login_user != null and login_user !='' ">
+	  AND
+	  	cust_id = #{login_user}
+	  AND
+	    pu_del_yn = 'N'
+	  </if>
+	  	
+	</select>
+
+	<select id="selectSalesList" parameterType="map" resultType="Sales">
+	<if test="startRow != null and startRow != '' ">
+		/* paging */
+  	<include refid="CommonMapper.pageHeader"></include>
+	</if>
+	  SELECT 
+		  a.bo_seq_no
+		  , a.cust_id
+		, a.pu_sales_date
+		, b.bo_title
+		, b.bo_type
+	  FROM bm_sales a, bm_board b 
+	  WHERE
+	  	1=1
+	  AND 
+	    a.pu_del_yn = 'N'
+	   AND a.bo_seq_no = b.bo_seq_no
+	  <if test="login_user != null and login_user != '' ">
+	  AND
+	  	a.cust_id = #{login_user}
+	  <if test="bo_seq_no != null and bo_seq_no != ''">
+	  AND
+	  	a.bo_seq_no = #{bo_seq_no}
+	  AND
+	  	a.pu_sales_date >= SYSDATE -1
+	  </if>
+	  </if>
+	  ORDER BY pu_sales_date DESC
+	  <if test="endRow != null and endRow != ''">
+	   <include refid="CommonMapper.pageFooter"></include>
+	   </if>
+	</select>
+	
+	
+	
+	<insert id="salesInsert" parameterType="map">
+		INSERT INTO BM_SALES (
+		      cust_id
+			, bo_seq_no
+			, pu_sales_date
+			, pu_del_yn
+		) VALUES (
+		      #{cust_id}
+		    , #{bo_seq_no}
+		    , SYSDATE
+		    , 'N'
+		)
+	
+	</insert>
+	
+	<update id="salesDelete" parameterType="string" >
+	
+	UPDATE BM_SALES
+    SET
+    	  pu_del_yn = 'Y'
+	    , pu_del_date = SYSDATE
+	WHERE
+        cust_id =#{cust_id}
+	
+	</update>
+
+</mapper>

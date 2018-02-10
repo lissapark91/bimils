@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<settings>
+	<setting name="jdbcTypeForNull" value="NULL"/>
+	<setting name="callSettersOnNulls" value="true"/>
+
+</settings>
+
+<typeAliases>
+<typeAlias type="com.bimils.myapp.member.model.Member" alias="Member"/>
+<typeAlias type="com.bimils.myapp.board.model.Board" alias="Board"/>
+<typeAlias type="com.bimils.myapp.board.model.BoardEffect" alias="BoardEffect"/>
+<typeAlias type="com.bimils.myapp.board.model.BoardReport" alias="BoardReport"/>
+<typeAlias type="com.bimils.myapp.reply.model.Reply" alias="Reply"/>
+<typeAlias type="com.bimils.myapp.common.image.model.Image" alias="Image"/>
+<typeAlias type="com.bimils.myapp.common.sales.model.Sales" alias="Sales"/>
+</typeAliases>
+
+
+</configuration>

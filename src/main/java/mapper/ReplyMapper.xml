@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bimils.myapp.reply.mapper.ReplyMapper">
+
+	<select id="selectReplyCnt" parameterType="int" resultType="int">
+	  
+	  SELECT  
+		count(*) as count
+		FROM
+		bm_reply
+	  WHERE
+		re_del_yn = 'N'
+	  AND
+	  	ref_seq_no = #{bo_seq_no}
+	  	
+	</select>
+
+	<select id="selectReplyList" parameterType="map" resultType="Reply">
+	
+		/* paging */
+  	<include refid="CommonMapper.pageHeader"></include>
+	  
+	  SELECT 
+		  a.re_seq_no
+		, a.re_writer
+		, b.mem_name as re_writer_name
+		, a.ref_seq_no
+		, a.re_content
+		, a.re_open_yn
+		, a.re_del_yn
+		, TO_CHAR(a.reg_date, 'YYYY/MM/DD HH24:MI') as reg_date
+		, a.upd_date
+	  FROM bm_reply a, bm_member b
+	  WHERE
+	  	ref_seq_no = #{bo_seq_no}
+	  AND
+	  	b.mem_id = a.re_writer
+	  AND 
+	    re_del_yn = 'N'
+
+	  ORDER BY reg_date
+	  
+	   <include refid="CommonMapper.pageFooter"></include>
+	</select>
+	
+	
+	<select id="selectMyReplyList" parameterType="map" resultType="Reply">
+	
+		/* paging */
+  	<include refid="CommonMapper.pageHeader"></include>
+	  
+	  SELECT 
+		  re_seq_no
+		, re_writer
+		, ref_seq_no
+		, (select bo_title from bm_board where bo_seq_no = a.ref_seq_no) as bo_title
+		, re_content
+		, re_open_yn
+		, re_del_yn
+		, TO_CHAR(reg_date, 'YYYY/MM/DD HH24:MI') as reg_date
+		, upd_date
+	  FROM bm_reply a
+	  WHERE
+	    re_del_yn = 'N'	  
+	  AND
+	  	re_writer = #{LOGIN_USER}
+	  ORDER BY reg_date DESC
+	  
+	   <include refid="CommonMapper.pageFooter"></include>
+	</select>
+	
+	
+	<insert id="replyInsert" parameterType="Reply">
+		INSERT INTO BM_REPLY (
+		    re_seq_no,
+		    re_writer,
+		    ref_seq_no,
+		    re_content,
+		    re_open_yn,
+		    re_del_yn,
+		    reg_date,
+		    upd_date
+		) VALUES (
+		    SEQ_RE_SEQ_NO.NEXTVAL,
+		    #{re_writer},
+		    #{ref_seq_no},
+		    #{re_content},
+		    #{re_open_yn},
+		    'N',
+		    SYSDATE,
+		    SYSDATE
+		)
+	
+	</insert>
+	
+	<update id="replyUpdate" parameterType="Reply" >
+	
+	UPDATE BM_REPLY
+    SET
+	      re_content = #{re_content}
+	    , re_open_yn = #{re_open_yn}
+	    , upd_date = SYSDATE
+	WHERE
+        RE_SEQ_NO =#{re_seq_no}
+	
+	</update>
+	
+	<update id="replyDelete" parameterType="int" >
+	
+	UPDATE BM_REPLY
+    SET
+    	  re_del_yn = 'Y'
+	    , upd_date = SYSDATE
+	WHERE
+        RE_SEQ_NO =#{re_seq_no}
+	
+	</update>
+
+</mapper>

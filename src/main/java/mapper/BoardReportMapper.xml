@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+  <mapper namespace="com.bimils.myapp.board.mapper.BoardReportMapper">
+  	
+  	<select id="selectBoardReportCnt" resultType="int" parameterType="map">
+  		
+  		SELECT  
+		count(*) as count
+		FROM
+		bm_bo_report
+		
+  		/* paramMap에 의한 제약 조건 (검색) */
+  	
+  	</select>
+  	
+  	<select id="selectBoardReportList" resultType="BoardReport" parameterType="map">
+  		/* paging */
+  	<include refid="CommonMapper.pageHeader"></include>
+  	
+  	SELECT
+  		report_seq_no
+  		, bo_seq_no
+  		, report_writer
+  		, report_content
+  		, reg_date
+  		, result_yn
+	FROM
+		bm_bo_report
+	WHERE
+		result_yn = 'N'
+	ORDER BY reg_date DESC
+	
+  	<include refid="CommonMapper.pageFooter"></include>
+  	</select>
+  	
+  	<select id="selectBoardReport" resultType="BoardReport" parameterType="int">
+  	
+  	SELECT
+  		report_seq_no
+  		, bo_seq_no
+  		, report_writer
+  		, report_content
+  		, reg_date
+	FROM
+		bm_bo_report
+	WHERE
+		report_seq_no = #{report_seq_no}
+		  	  	
+  	</select>
+  	
+  	
+  	<insert id="insertBoardReport" parameterType="BoardReport">
+
+  	<selectKey keyProperty="report_seq_no" resultType="int" order="BEFORE">
+  		SELECT SEQ_REPORT_SEQ_NO.NEXTVAL FROM DUAL
+  	</selectKey>
+  	INSERT INTO BM_BO_REPORT (
+	    bo_seq_no,
+	    report_writer,
+	    report_content,
+	    reg_date,
+	    report_seq_no,
+	    result_yn
+	) VALUES (
+	    #{bo_seq_no},
+	    #{report_writer},
+	    #{report_content},
+	    SYSDATE,
+	    #{report_seq_no},
+	    'N'
+	)
+  	
+  	
+  	</insert>
+  	  	
+  	
+  	<update id="updateBoardReportResult" parameterType="int">
+  	
+  	UPDATE bm_bo_report
+  	  SET
+  		result_yn = 'Y'
+  	  WHERE
+  	    report_seq_no = #{report_seq_no}
+
+  	
+  	</update>
+  
+  </mapper>

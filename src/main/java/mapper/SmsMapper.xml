@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bimils.myapp.common.sms.mapper.SmsMapper">
+
+	<select id="selectSmsList" resultType="com.bimils.myapp.common.sms.model.SmsMsg">
+		SELECT
+		    sms_seq_no,
+		    sms_phone_no,
+		    sms_title,
+		    sms_content,
+		    sms_status,
+		    sms_reg_date,
+		    sms_snd_date
+		FROM
+		    tb_sms_msg
+		WHERE sms_status = #{sms_status}
+	</select>
+	
+	<insert id="insertSms" parameterType="com.bimils.myapp.common.sms.model.SmsMsg">
+	INSERT INTO tb_sms_msg (
+	    sms_seq_no,
+	    sms_phone_no,
+	    sms_title,
+	    sms_content,
+	    sms_status,
+	    sms_reg_date
+	) VALUES (
+	    seq_sms_seq_no.nextval,
+	    #{sms_phone_no},
+	    #{sms_title},
+	    #{sms_content},
+	    #{sms_status},
+	    SYSDATE
+	)	
+	</insert>
+	
+	<update id="updateSmsStatus" parameterType="map">
+	UPDATE tb_sms_msg SET
+	 	sms_status = #{sms_status},
+	 	sms_snd_date = SYSDATE
+	WHERE sms_seq_no = #{sms_seq_no}
+	</update>
+
+</mapper>
+
+
+
+
+
